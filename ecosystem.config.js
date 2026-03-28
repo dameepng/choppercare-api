@@ -8,6 +8,7 @@ module.exports = {
     {
       name: "choppercare-api",
       script: "./venv/bin/gunicorn",
+      interpreter: "none",
       args: "-w 2 -k uvicorn.workers.UvicornWorker app.main:app --bind 0.0.0.0:8001 --timeout 120",
       cwd: appDir,
       env: {

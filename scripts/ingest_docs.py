@@ -83,6 +83,8 @@ async def ingest_file(filepath: str, db: AsyncSession):
 
 async def main():
     docs_dir = os.path.join(os.path.dirname(os.path.dirname(__file__)), "docs")
+    os.makedirs(docs_dir, exist_ok=True)
+
     pdf_files = [
         os.path.join(docs_dir, f)
         for f in os.listdir(docs_dir)
@@ -91,6 +93,7 @@ async def main():
 
     if not pdf_files:
         print("❌ Tidak ada PDF di folder docs/")
+        print(f"Taruh file PDF BNPB di: {docs_dir}")
         return
 
     print(f"Found {len(pdf_files)} PDF files, starting ingest...")

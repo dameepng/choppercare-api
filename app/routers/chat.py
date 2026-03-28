@@ -1,5 +1,6 @@
 import json
 import asyncio
+import logging
 from fastapi import APIRouter, Depends, Request
 from fastapi.responses import StreamingResponse
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -13,6 +14,7 @@ from app.middleware.rate_limit import limiter
 from app.config import settings
 
 router = APIRouter()
+logger = logging.getLogger(__name__)
 
 
 @router.post("/chat")
@@ -51,7 +53,9 @@ async def chat(
             await save_message(body.session_id, "assistant", full_response, db)
 
         except Exception as e:
-            yield f"data: {json.dumps({'error': str(e)})}\n\n"
+            logger.exception("Chat streaming failed")
+            yield f"data: {json.dumps({'error': 'Layanan AI sedang bermasalah. Coba lagi sebentar.', 'detail': str(e)})}\n\n"
+            yield f"data: {json.dumps({'done': True})}\n\n"
 
     return StreamingResponse(
         event_stream(),

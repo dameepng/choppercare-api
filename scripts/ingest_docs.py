@@ -66,7 +66,7 @@ async def ingest_file(filepath: str, db: AsyncSession):
             await db.execute(
                 text("""
                     INSERT INTO bnpb_chunks (content, source, page, embedding)
-                    VALUES (:content, :source, :page, :embedding::vector)
+                    VALUES (:content, :source, :page, CAST(:embedding AS vector))
                 """),
                 {
                     "content": chunk,

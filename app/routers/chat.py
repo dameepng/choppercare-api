@@ -36,7 +36,11 @@ async def chat(
             history.append({"role": "user", "content": body.message})
 
             # 3. RAG: retrieve context dari BNPB docs
-            context = await retrieve_context(body.message, db)
+            try:
+                context = await retrieve_context(body.message, db)
+            except Exception:
+                logger.exception("RAG retrieval failed, continuing without context")
+                context = ""
 
             # 4. Stream dari Groq
             async for token in stream_chat(history, context):

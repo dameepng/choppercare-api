@@ -36,9 +36,9 @@ async def retrieve_context(query: str, db: AsyncSession) -> str:
     result = await db.execute(
         text("""
             SELECT content, source, page,
-                   1 - (embedding <=> :embedding::vector) AS similarity
+                   1 - (embedding <=> CAST(:embedding AS vector)) AS similarity
             FROM bnpb_chunks
-            WHERE 1 - (embedding <=> :embedding::vector) > 0.5
+            WHERE 1 - (embedding <=> CAST(:embedding AS vector)) > 0.5
             ORDER BY similarity DESC
             LIMIT :top_k
         """),
